@@ -24,13 +24,16 @@ pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
     //indexer config
     let indexer_config = config.into_indexer();
 
-
     tracing::info!("Starting Chronicle with config: {:?}", config);
 
-    spawn_tasks([
-        IndexerTask::new(indexer_config).boxed(),
-        ServerTask::new(server_config).boxed(),
-    ], tokio::signal::ctrl_c()).await;
+    spawn_tasks(
+        [
+            IndexerTask::new(indexer_config).boxed(),
+            ServerTask::new(server_config).boxed(),
+        ],
+        tokio::signal::ctrl_c(),
+    )
+    .await;
 
     Ok(())
 }
