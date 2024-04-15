@@ -4,4 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread"] }
+tokio.workspace = true
+anyhow.workspace = true
+tracing.workspace = true
+
+
+clap = {version = "4.5.1", features = ["derive"]}
+toml = "0.8.10"
+chronicle-primitives = { path = "../../crates/primitives" }
