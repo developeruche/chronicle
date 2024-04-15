@@ -17,3 +17,4 @@ tracing.workspace = true
 
 
 tokio-util = "0.7.8"
+chronicle-primitives = { path = "../../crates/primitives" }

@@ -1,3 +1,6 @@
+pub mod indexer;
+pub mod server;
+
 use async_trait::async_trait;
 use futures::{future::try_join_all, Future};
 use tokio::sync::mpsc;
