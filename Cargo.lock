@@ -1064,6 +1064,8 @@ version = "0.1.0"
 dependencies = [
  "alloy",
  "anyhow",
+ "futures-core",
+ "tokio",
 ]
 
 [[package]]

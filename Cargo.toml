@@ -43,3 +43,4 @@ alloy = { git = "https://github.com/alloy-rs/alloy", rev = "bfd0fda", features =
     "signer-wallet",
     "signer-yubihsm",
 ] }
+futures-core = "0.3.30"

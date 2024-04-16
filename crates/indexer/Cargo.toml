@@ -8,3 +8,5 @@ edition = "2021"
 [dependencies]
 alloy.workspace = true
 anyhow.workspace = true
+futures-core.workspace = true
+tokio.workspace = true
