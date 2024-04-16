@@ -42,5 +42,6 @@ alloy = { git = "https://github.com/alloy-rs/alloy", rev = "bfd0fda", features =
     "signer-trezor",
     "signer-wallet",
     "signer-yubihsm",
+    "pubsub"
 ] }
 futures-core = "0.3.30"

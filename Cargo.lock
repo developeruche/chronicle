@@ -1065,6 +1065,8 @@ dependencies = [
  "alloy",
  "anyhow",
  "futures-core",
+ "futures-util",
+ "serde_json",
  "tokio",
 ]
 
