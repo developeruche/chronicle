@@ -49,8 +49,9 @@ checksum = "5c6cb57a04249c6480766f7f7cef5467412af1490f8d1e243141daddada3264f"
 [[package]]
 name = "alloy"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
+ "alloy-consensus",
  "alloy-contract",
  "alloy-core",
  "alloy-eips",
@@ -77,12 +78,13 @@ dependencies = [
 [[package]]
 name = "alloy-consensus"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-eips",
  "alloy-primitives",
  "alloy-rlp",
  "alloy-serde",
+ "c-kzg",
  "serde",
  "sha2",
 ]
@@ -90,7 +92,7 @@ dependencies = [
 [[package]]
 name = "alloy-contract"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-dyn-abi",
  "alloy-json-abi",
@@ -137,7 +139,7 @@ dependencies = [
 [[package]]
 name = "alloy-eips"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-primitives",
  "alloy-rlp",
@@ -150,7 +152,7 @@ dependencies = [
 [[package]]
 name = "alloy-genesis"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-primitives",
  "alloy-serde",
@@ -172,18 +174,19 @@ dependencies = [
 [[package]]
 name = "alloy-json-rpc"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-primitives",
  "serde",
  "serde_json",
  "thiserror",
+ "tracing",
 ]
 
 [[package]]
 name = "alloy-network"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-consensus",
  "alloy-eips",
@@ -193,14 +196,13 @@ dependencies = [
  "alloy-signer",
  "async-trait",
  "futures-utils-wasm",
- "serde",
  "thiserror",
 ]
 
 [[package]]
 name = "alloy-node-bindings"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-genesis",
  "alloy-primitives",
@@ -237,15 +239,18 @@ dependencies = [
 [[package]]
 name = "alloy-provider"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
+ "alloy-eips",
  "alloy-json-rpc",
  "alloy-network",
+ "alloy-node-bindings",
  "alloy-primitives",
  "alloy-pubsub",
  "alloy-rpc-client",
  "alloy-rpc-types",
  "alloy-rpc-types-trace",
+ "alloy-signer-wallet",
  "alloy-transport",
  "alloy-transport-http",
  "alloy-transport-ipc",
@@ -255,6 +260,7 @@ dependencies = [
  "auto_impl",
  "dashmap",
  "futures",
+ "futures-utils-wasm",
  "lru",
  "reqwest",
  "serde_json",
@@ -266,7 +272,7 @@ dependencies = [
 [[package]]
 name = "alloy-pubsub"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-json-rpc",
  "alloy-primitives",
@@ -306,7 +312,7 @@ dependencies = [
 [[package]]
 name = "alloy-rpc-client"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-json-rpc",
  "alloy-primitives",
@@ -330,7 +336,7 @@ dependencies = [
 [[package]]
 name = "alloy-rpc-types"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-consensus",
  "alloy-eips",
@@ -348,7 +354,7 @@ dependencies = [
 [[package]]
 name = "alloy-rpc-types-trace"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-primitives",
  "alloy-rpc-types",
@@ -360,7 +366,7 @@ dependencies = [
 [[package]]
 name = "alloy-serde"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-primitives",
  "serde",
@@ -370,7 +376,7 @@ dependencies = [
 [[package]]
 name = "alloy-signer"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-primitives",
  "async-trait",
@@ -383,7 +389,7 @@ dependencies = [
 [[package]]
 name = "alloy-signer-ledger"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-consensus",
  "alloy-network",
@@ -400,7 +406,7 @@ dependencies = [
 [[package]]
 name = "alloy-signer-trezor"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-consensus",
  "alloy-network",
@@ -416,7 +422,7 @@ dependencies = [
 [[package]]
 name = "alloy-signer-wallet"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-consensus",
  "alloy-network",
@@ -494,7 +500,7 @@ dependencies = [
 [[package]]
 name = "alloy-transport"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-json-rpc",
  "base64 0.22.0",
@@ -512,7 +518,7 @@ dependencies = [
 [[package]]
 name = "alloy-transport-http"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-json-rpc",
  "alloy-transport",
@@ -525,7 +531,7 @@ dependencies = [
 [[package]]
 name = "alloy-transport-ipc"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-json-rpc",
  "alloy-pubsub",
@@ -543,7 +549,7 @@ dependencies = [
 [[package]]
 name = "alloy-transport-ws"
 version = "0.1.0"
-source = "git+https://github.com/alloy-rs/alloy?rev=bfd0fda#bfd0fda492e560c3463d521958793c81bbeadfc1"
+source = "git+https://github.com/CoinDao/alloy#88e5a3289e12500ec57298bd6f905b58eda8469c"
 dependencies = [
  "alloy-pubsub",
  "alloy-transport",
