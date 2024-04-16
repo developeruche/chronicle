@@ -12,7 +12,7 @@ pub type EventStream<T> = Box<dyn Stream<Item = T> + Unpin>;
 /// This function queries events from a specified block number
 /// `[Filter]`, having `address`, `last_block` and `event_signature` as parameters
 pub async fn query_events(
-    provider: ReqwestProvider,
+    provider: RootProvider<PubSubFrontend>,
     addr: Address,
     event_sig: B256,
     block_number: BlockNumberOrTag,
@@ -58,8 +58,11 @@ pub mod tests {
 
     #[tokio::test]
     pub async fn test_query_events_works() {
-        let rpc_url = "https://eth.merkle.io".parse().unwrap();
-        let provider = ProviderBuilder::new().on_http(rpc_url).unwrap();
+        let rpc_url = "wss://eth.merkle.io";
+
+        // Create the provider.
+        let ws = WsConnect::new(rpc_url);
+        let provider = ProviderBuilder::new().on_ws(ws).await.unwrap();
 
         let block_num = 19664198u64;
         let uniswap_token_address = address!("1f9840a85d5aF5bf1D1762F925BDADdC4201F984");
@@ -114,10 +117,11 @@ pub mod tests {
         let transfer_event_signature =
             b256!("ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef");
 
+        let mut x = 0;
+
         let callback = |log: Log| {
                 println!("Received log: {:?}", log);
-                let opt: Option<String> = None;
-                opt.unwrap();
+                x += 1;
         };
 
         subscribe_to_events(provider, vec![uniswap_token_address], transfer_event_signature, callback).await;
