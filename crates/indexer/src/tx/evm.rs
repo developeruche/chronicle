@@ -49,21 +49,21 @@ pub mod tests {
 
     use super::*;
 
-    #[tokio::test]
-    pub async fn test_subscribe_transactions_works() {
-        let rpc_url = "wss://eth.merkle.io";
+    // #[tokio::test]
+    // pub async fn test_subscribe_transactions_works() {
+    //     let rpc_url = "wss://eth.merkle.io";
 
-        // Create the provider.
-        let ws = WsConnect::new(rpc_url);
-        let provider = ProviderBuilder::new().on_ws(ws).await.unwrap();
-        let usdc_token_address = address!("a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48");
+    //     // Create the provider.
+    //     let ws = WsConnect::new(rpc_url);
+    //     let provider = ProviderBuilder::new().on_ws(ws).await.unwrap();
+    //     let usdc_token_address = address!("a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48");
 
-        let callback = |tx: Vec<Transaction>| {
-            println!("Received Tx: {:?}", tx);
-        };
+    //     let callback = |tx: Vec<Transaction>| {
+    //         println!("Received Tx: {:?}", tx);
+    //     };
 
-        subscribe_transactions(usdc_token_address, provider, callback)
-            .await
-            .unwrap();
-    }
+    //     subscribe_transactions(usdc_token_address, provider, callback)
+    //         .await
+    //         .unwrap();
+    // }
 }

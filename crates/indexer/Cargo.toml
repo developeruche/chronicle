@@ -17,3 +17,4 @@ async-trait.workspace = true
 
 
 chronicle-primitives = { path = "../../crates/primitives" }
+alloy-sol-types = { git = "https://github.com/alloy-rs/core" }
