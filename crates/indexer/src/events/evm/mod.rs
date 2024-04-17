@@ -1,6 +1,6 @@
 pub mod utils;
 
-
+use self::utils::{query_events, subscribe_to_events};
 use alloy::{
     primitives::{Address, B256},
     providers::RootProvider,
@@ -9,14 +9,8 @@ use alloy::{
 };
 use async_trait::async_trait;
 use chronicle_primitives::{indexer::ChronicleEvent, interfaces::ChronicleEventIndexer};
-use self::utils::{query_events, subscribe_to_events};
-
-
-
 
 pub struct EvmEventIndexer {}
-
-
 
 #[async_trait]
 impl ChronicleEventIndexer for EvmEventIndexer {

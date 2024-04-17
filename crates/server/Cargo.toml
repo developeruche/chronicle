@@ -6,3 +6,11 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+anyhow.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+
+
+async-graphql = "7.0.3"
+async-graphql-axum = "7.0.3"
+axum = "0.7.5"
