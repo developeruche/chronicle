@@ -12,12 +12,15 @@ use tokio::net::TcpListener;
 
 
 
-
+/// This function is used to serve the graphQL server and GraphiQL IDE.
 async fn graphiql() -> impl IntoResponse {
     response::Html(GraphiQLSource::build().endpoint("/").finish())
 }
 
 
+/// This function is used to run the chronicle server.
+/// `[DB]` This is a generic type, which is used to store the database.
+/// `[Query]` This is a gaint Query entity, for all the Events enitities and all the tx enitities.
 pub async fn run_chronicle_server<DB, Query>(
     url: String,
     db: DB,
