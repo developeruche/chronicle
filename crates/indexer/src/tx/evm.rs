@@ -1,18 +1,19 @@
-use alloy::{primitives::Address, providers::{Provider, RootProvider}, pubsub::PubSubFrontend, rpc::types::eth::{BlockTransactions, Transaction}};
+use alloy::{
+    primitives::Address,
+    providers::{Provider, RootProvider},
+    pubsub::PubSubFrontend,
+    rpc::types::eth::{BlockTransactions, Transaction},
+};
 use futures_util::stream::StreamExt;
 
 
-
-
-/// This function subscribes to blocks and filters transactions based on the index address.
-/// Uses a callback closure to output the filter tx
 pub async fn subscribe_transactions<F>(
     index_address: Address,
     provider: RootProvider<PubSubFrontend>,
     mut callback: F,
 ) -> Result<(), anyhow::Error>
 where
-    F: FnMut(Vec<Transaction>)
+    F: FnMut(Vec<Transaction>),
 {
     let subscription = provider.subscribe_blocks().await?;
     let mut stream = subscription.into_stream();
@@ -21,25 +22,27 @@ where
         println!("Captured Block: {:?}", block.transactions);
         match block.transactions {
             BlockTransactions::Full(txs) => {
-                let filtered_txs = txs.into_iter().filter(|tx| {
-                    println!("Captured Tx: {:?}", tx.hash);
-                    let to_address = match tx.to {
-                        Some(to) => to,
-                        None => Address::ZERO,
-                    };
+                let filtered_txs = txs
+                    .into_iter()
+                    .filter(|tx| {
+                        println!("Captured Tx: {:?}", tx.hash);
+                        let to_address = match tx.to {
+                            Some(to) => to,
+                            None => Address::ZERO,
+                        };
 
-                    tx.from == index_address || to_address == index_address
-                }).collect::<Vec<Transaction>>();
+                        tx.from == index_address || to_address == index_address
+                    })
+                    .collect::<Vec<Transaction>>();
 
                 callback(filtered_txs);
-            },
+            }
             _ => {}
         }
     }
 
     Ok(())
 }
-
 
 #[cfg(test)]
 pub mod tests {
@@ -57,9 +60,11 @@ pub mod tests {
         let usdc_token_address = address!("a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48");
 
         let callback = |tx: Vec<Transaction>| {
-                println!("Received Tx: {:?}", tx);
+            println!("Received Tx: {:?}", tx);
         };
 
-        subscribe_transactions(usdc_token_address, provider, callback).await.unwrap();
+        subscribe_transactions(usdc_token_address, provider, callback)
+            .await
+            .unwrap();
     }
 }

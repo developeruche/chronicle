@@ -1,6 +1,7 @@
 pub mod errors;
-use serde::{Deserialize, Serialize};
 pub mod indexer;
+pub mod interfaces;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Config {
