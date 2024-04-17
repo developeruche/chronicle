@@ -1070,6 +1070,8 @@ version = "0.1.0"
 dependencies = [
  "alloy",
  "anyhow",
+ "async-trait",
+ "chronicle-primitives",
  "futures-core",
  "futures-util",
  "serde_json",

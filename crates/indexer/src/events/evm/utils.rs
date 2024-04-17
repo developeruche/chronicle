@@ -1,29 +1,29 @@
 use alloy::{
     primitives::{Address, B256},
-    providers::{Provider, ReqwestProvider, RootProvider},
+    providers::{Provider, RootProvider},
     pubsub::PubSubFrontend,
-    rpc::types::eth::{BlockNumberOrTag, Filter, Log},
+    rpc::types::eth::{BlockNumberOrTag, Filter},
 };
+use chronicle_primitives::indexer::ChronicleEvent;
 use futures_core::stream::Stream;
 use futures_util::stream::StreamExt;
 
 pub type EventStream<T> = Box<dyn Stream<Item = T> + Unpin>;
-
 
 pub async fn query_events(
     provider: RootProvider<PubSubFrontend>,
     addr: Address,
     event_sig: B256,
     block_number: BlockNumberOrTag,
-) -> Result<Vec<Log>, anyhow::Error> {
+) -> Result<Vec<ChronicleEvent>, anyhow::Error> {
     let filter = Filter::new()
         .address(addr)
         .event_signature(event_sig)
         .from_block(block_number);
     let log = provider.get_logs(&filter).await?;
-    Ok(log)
+    let chronicle_logs: Vec<ChronicleEvent> = log.into_iter().map(|log| log.into()).collect();
+    Ok(chronicle_logs)
 }
-
 
 pub async fn subscribe_to_events<F>(
     provider: RootProvider<PubSubFrontend>,
@@ -31,7 +31,7 @@ pub async fn subscribe_to_events<F>(
     event_sig: B256,
     mut callback: F,
 ) where
-    F: FnMut(Log),
+    F: FnMut(ChronicleEvent) + Send,
 {
     let filter = Filter::new()
         .address(addr)
@@ -45,7 +45,7 @@ pub async fn subscribe_to_events<F>(
     let mut stream = sub.into_stream();
 
     while let Some(log) = stream.next().await {
-        callback(log);
+        callback(log.into());
     }
 }
 
@@ -55,7 +55,7 @@ pub mod tests {
     use alloy::{
         primitives::{address, b256},
         providers::ProviderBuilder,
-        rpc::client::WsConnect,
+        rpc::{client::WsConnect, types::eth::Log},
     };
 
     #[tokio::test]
@@ -126,7 +126,7 @@ pub mod tests {
 
         let mut x = 0;
 
-        let callback = |log: Log| {
+        let callback = |log: ChronicleEvent| {
             println!("Received log: {:?}", log);
             x += 1;
         };

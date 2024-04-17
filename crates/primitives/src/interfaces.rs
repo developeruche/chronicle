@@ -1,6 +1,5 @@
-use async_trait::async_trait;
 use crate::indexer::{ChronicleEvent, ChronicleTransaction};
-
+use async_trait::async_trait;
 
 /// This event indexer triat would be shared across all supported chains
 #[async_trait]
@@ -9,7 +8,6 @@ pub trait ChronicleEventIndexer {
     type ContractAddress;
     type EventSignature;
     type BlockNumber;
-
 
     /// This function queries events from a specified block number
     /// `[Filter]`, having `address`, `last_block` and `event_signature` as parameters
@@ -21,7 +19,6 @@ pub trait ChronicleEventIndexer {
         block_nuber: Self::BlockNumber,
     ) -> Result<Vec<ChronicleEvent>, anyhow::Error>;
 
-
     /// This creates a filter and subscribes to an event returning the event
     /// stream <T: Stream<Item = Resp> + Unpin>
     async fn subscribe_to_events<F>(
@@ -31,9 +28,8 @@ pub trait ChronicleEventIndexer {
         event_sig: Self::EventSignature,
         callback: F,
     ) where
-        F: FnMut(ChronicleEvent);
+        F: FnMut(ChronicleEvent) + Send;
 }
-
 
 /// This transaction indexer trait would be used across all supported chains
 #[async_trait]
@@ -51,5 +47,4 @@ pub trait ChronicleTransactionIndexer {
     ) -> Result<(), anyhow::Error>
     where
         F: FnMut(Vec<ChronicleTransaction>);
-
 }

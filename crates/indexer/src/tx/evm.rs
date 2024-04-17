@@ -6,7 +6,6 @@ use alloy::{
 };
 use futures_util::stream::StreamExt;
 
-
 pub async fn subscribe_transactions<F>(
     index_address: Address,
     provider: RootProvider<PubSubFrontend>,
