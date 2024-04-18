@@ -1,6 +1,4 @@
-use async_graphql::{
-    http::GraphiQLSource, EmptyMutation, EmptySubscription, ObjectType, Schema,
-};
+use async_graphql::{http::GraphiQLSource, EmptyMutation, EmptySubscription, ObjectType, Schema};
 use async_graphql_axum::GraphQL;
 use axum::{
     response::{self, IntoResponse},
@@ -9,14 +7,10 @@ use axum::{
 };
 use tokio::net::TcpListener;
 
-
-
-
 /// This function is used to serve the graphQL server and GraphiQL IDE.
 async fn graphiql() -> impl IntoResponse {
     response::Html(GraphiQLSource::build().endpoint("/").finish())
 }
-
 
 /// This function is used to run the chronicle server.
 /// `[DB]` This is a generic type, which is used to store the database.
@@ -39,7 +33,6 @@ where
     axum::serve(TcpListener::bind(url).await.unwrap(), app)
         .await
         .unwrap();
-
 
     Ok(())
 }

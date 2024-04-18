@@ -1,4 +1,7 @@
-use alloy::{primitives::{Address, Bytes, B256, U256}, rpc::types::eth::{Log, Transaction}};
+use alloy::{
+    primitives::{Address, Bytes, B256, U256},
+    rpc::types::eth::{Log, Transaction},
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
@@ -22,7 +25,7 @@ pub struct ChronicleTransaction {
     pub gas_price: u128,
     pub gas: u128,
     pub max_fee_per_gas: u128,
-    pub data: Bytes
+    pub data: Bytes,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -56,7 +59,7 @@ impl From<Log> for ChronicleEvent {
             block_number: log.block_number.unwrap_or(0),
             transaction_hash: log.transaction_hash.unwrap_or(B256::default()),
             topics: log.data().clone().topics().to_vec(),
-            data: log.inner.data.data
+            data: log.inner.data.data,
         }
     }
 }
