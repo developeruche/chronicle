@@ -1,6 +1,7 @@
 pub mod errors;
 pub mod indexer;
 pub mod interfaces;
+pub mod db;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
