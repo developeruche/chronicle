@@ -22,7 +22,7 @@ pub struct DisplayChronicleEvent {
     pub block_number: i64,
     pub transaction_hash: String,
     pub topics: Vec<String>,
-    pub data: Vec<u8>
+    pub data: Vec<u8>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
@@ -76,22 +76,30 @@ impl From<Log> for ChronicleEvent {
     }
 }
 
-
 impl DisplayChronicleEvent {
-    pub fn new(address: String, block_number: i64, transaction_hash: String, topics: Vec<String>, data: Vec<u8>) -> Self {
+    pub fn new(
+        address: String,
+        block_number: i64,
+        transaction_hash: String,
+        topics: Vec<String>,
+        data: Vec<u8>,
+    ) -> Self {
         Self {
             address,
             block_number,
             transaction_hash,
             topics,
-            data
+            data,
         }
     }
 }
 
-
 impl ChronicleEvent {
-    pub async fn store_event(&self, db_client: &mut Client, name: &str) -> Result<(), anyhow::Error> {
+    pub async fn store_event(
+        &self,
+        db_client: &mut Client,
+        name: &str,
+    ) -> Result<(), anyhow::Error> {
         store_event_to_db(self, db_client, name)?;
 
         Ok(())

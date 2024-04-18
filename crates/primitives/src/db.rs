@@ -1,16 +1,13 @@
-use postgres::Client;
-
 use crate::indexer::{ChronicleEvent, DisplayChronicleEvent};
-
-
-
+use postgres::Client;
 
 /// This function would be used to store the event to the db
 /// params:
 /// db_client: &mut Client - The db client [let mut client = Client::connect("postgresql://postgres:postgres@localhost/library", NoTls)?;]
 /// name: &str - The name of the table
 pub fn create_new_db_table(db_client: &mut Client, name: &str) -> Result<(), anyhow::Error> {
-    let executable = format!("
+    let executable = format!(
+        "
         CREATE TABLE IF NOT EXISTS {name} (
             id              SERIAL PRIMARY KEY,
             address         VARCHAR NULL,
@@ -19,7 +16,8 @@ pub fn create_new_db_table(db_client: &mut Client, name: &str) -> Result<(), any
             topics          VARCHAR[] NULL,
             data            BYTEA NULL
         )
-    ");
+    "
+    );
     db_client.batch_execute(&executable)?;
 
     Ok(())
@@ -29,20 +27,30 @@ pub fn create_new_db_table(db_client: &mut Client, name: &str) -> Result<(), any
 /// params:
 /// db_client: &mut Client - The db client [let mut client = Client::connect("postgresql://postgres:postgres@localhost/library", NoTls)?;]
 /// name: &str - The name of the table
-pub fn store_event_to_db(event: &ChronicleEvent, db_client: &mut Client, name: &str) -> Result<(), anyhow::Error> {
-    let executable = format!("
+pub fn store_event_to_db(
+    event: &ChronicleEvent,
+    db_client: &mut Client,
+    name: &str,
+) -> Result<(), anyhow::Error> {
+    let executable = format!(
+        "
         INSERT INTO {name} (address, block_number, transaction_hash, topics, data)
         VALUES ($1, $2, $3, $4, $5)
-    ");
-    let stringified_topics: Vec<String> = event.topics.iter().map(|topic| topic.to_string()).collect();
+    "
+    );
+    let stringified_topics: Vec<String> =
+        event.topics.iter().map(|topic| topic.to_string()).collect();
     let block_number = event.block_number as i64;
-    db_client.execute(&executable, &[
-        &event.address.to_string(),
-        &block_number,
-        &event.transaction_hash.to_string(),
-        &stringified_topics,
-        &event.data.to_vec(),
-    ])?;
+    db_client.execute(
+        &executable,
+        &[
+            &event.address.to_string(),
+            &block_number,
+            &event.transaction_hash.to_string(),
+            &stringified_topics,
+            &event.data.to_vec(),
+        ],
+    )?;
 
     Ok(())
 }
@@ -51,11 +59,16 @@ pub fn store_event_to_db(event: &ChronicleEvent, db_client: &mut Client, name: &
 /// params:
 /// db_client: &mut Client - The db client [let mut client = Client::connect("postgresql://postgres:postgres@localhost/library", NoTls)?;]
 /// name: &str - The name of the table
-pub fn get_all_events(db_client: &mut Client, name: &str) -> Result<Vec<DisplayChronicleEvent>, anyhow::Error> {
+pub fn get_all_events(
+    db_client: &mut Client,
+    name: &str,
+) -> Result<Vec<DisplayChronicleEvent>, anyhow::Error> {
     let mut events = Vec::new();
-    let executable = format!("
+    let executable = format!(
+        "
         SELECT * FROM {name}
-    ");
+    "
+    );
     let rows = db_client.query(&executable, &[])?;
     for row in rows {
         let address: String = row.get(0);
@@ -64,7 +77,13 @@ pub fn get_all_events(db_client: &mut Client, name: &str) -> Result<Vec<DisplayC
         let topics: Vec<String> = row.get(3);
         let data: Vec<u8> = row.get(4);
 
-        events.push(DisplayChronicleEvent::new(address, block_number, transaction_hash, topics, data));
+        events.push(DisplayChronicleEvent::new(
+            address,
+            block_number,
+            transaction_hash,
+            topics,
+            data,
+        ));
     }
 
     Ok(events)
@@ -77,9 +96,11 @@ pub fn get_all_events(db_client: &mut Client, name: &str) -> Result<Vec<DisplayC
 /// filter: Vec<String> - The filter to be used [address, block_number, transaction_hash]
 pub fn get_all_events_with_filter(db_client: &mut Client, name: &str, filter: Vec<String>) {
     let filter_decoded = filter.join(", ");
-    let executable = format!("
+    let executable = format!(
+        "
         SELECT {filter_decoded} FROM {name}
-    ");
+    "
+    );
     let rows = db_client.query(&executable, &[]).unwrap();
     for row in rows {
         let address: String = row.get(0);
@@ -87,7 +108,10 @@ pub fn get_all_events_with_filter(db_client: &mut Client, name: &str, filter: Ve
         let transaction_hash: String = row.get(2);
         let topics: Vec<String> = row.get(3);
         let data: Vec<u8> = row.get(4);
-        println!("address: {}, block_number: {}, transaction_hash: {}, topics: {:?}, data: {:?}", address, block_number, transaction_hash, topics, data);
+        println!(
+            "address: {}, block_number: {}, transaction_hash: {}, topics: {:?}, data: {:?}",
+            address, block_number, transaction_hash, topics, data
+        );
     }
 
     todo!();
@@ -98,11 +122,17 @@ pub fn get_all_events_with_filter(db_client: &mut Client, name: &str, filter: Ve
 /// db_client: &mut Client - The db client [let mut client = Client::connect("postgresql://postgres:postgres@localhost/library", NoTls).unwrap();]
 /// name: &str - The name of the table
 /// transaction_hash: String - The transaction hash
-pub fn get_events_by_tx_hash(db_client: &mut Client, name: &str, transaction_hash: String) -> Result<Vec<DisplayChronicleEvent>, anyhow::Error> {
+pub fn get_events_by_tx_hash(
+    db_client: &mut Client,
+    name: &str,
+    transaction_hash: String,
+) -> Result<Vec<DisplayChronicleEvent>, anyhow::Error> {
     let mut events = Vec::new();
-    let executable = format!("
+    let executable = format!(
+        "
         SELECT * FROM {name} WHERE transaction_hash = $1
-    ");
+    "
+    );
     let rows = db_client.query(&executable, &[&transaction_hash]).unwrap();
     for row in rows {
         let address: String = row.get(0);
@@ -111,7 +141,13 @@ pub fn get_events_by_tx_hash(db_client: &mut Client, name: &str, transaction_has
         let topics: Vec<String> = row.get(3);
         let data: Vec<u8> = row.get(4);
 
-        events.push(DisplayChronicleEvent::new(address, block_number, transaction_hash, topics, data));
+        events.push(DisplayChronicleEvent::new(
+            address,
+            block_number,
+            transaction_hash,
+            topics,
+            data,
+        ));
     }
 
     Ok(events)
@@ -122,11 +158,17 @@ pub fn get_events_by_tx_hash(db_client: &mut Client, name: &str, transaction_has
 /// db_client: &mut Client - The db client [let mut client = Client::connect("postgresql://postgres:postgres@localhost/library", NoTls).unwrap();]
 /// name: &str - The name of the table
 /// block_number: i64 - The block number
-pub fn get_events_by_block_number(db_client: &mut Client, name: &str, block_number: i64) -> Result<Vec<DisplayChronicleEvent>, anyhow::Error> {
+pub fn get_events_by_block_number(
+    db_client: &mut Client,
+    name: &str,
+    block_number: i64,
+) -> Result<Vec<DisplayChronicleEvent>, anyhow::Error> {
     let mut events = Vec::new();
-    let executable = format!("
+    let executable = format!(
+        "
         SELECT * FROM {name} WHERE block_number = $1
-    ");
+    "
+    );
     let rows = db_client.query(&executable, &[&block_number]).unwrap();
     for row in rows {
         let address: String = row.get(0);
@@ -135,7 +177,13 @@ pub fn get_events_by_block_number(db_client: &mut Client, name: &str, block_numb
         let topics: Vec<String> = row.get(3);
         let data: Vec<u8> = row.get(4);
 
-        events.push(DisplayChronicleEvent::new(address, block_number, transaction_hash, topics, data));
+        events.push(DisplayChronicleEvent::new(
+            address,
+            block_number,
+            transaction_hash,
+            topics,
+            data,
+        ));
     }
 
     Ok(events)
