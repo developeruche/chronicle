@@ -5,6 +5,8 @@ use alloy::{
 use postgres::Client;
 use serde::{Deserialize, Serialize};
 
+use crate::db::store_event_to_db;
+
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct ChronicleEvent {
     pub address: Address,
@@ -12,6 +14,15 @@ pub struct ChronicleEvent {
     pub transaction_hash: B256,
     pub topics: Vec<B256>,
     pub data: Bytes,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+pub struct DisplayChronicleEvent {
+    pub address: String,
+    pub block_number: i64,
+    pub transaction_hash: String,
+    pub topics: Vec<String>,
+    pub data: Vec<u8>
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
@@ -66,127 +77,23 @@ impl From<Log> for ChronicleEvent {
 }
 
 
+impl DisplayChronicleEvent {
+    pub fn new(address: String, block_number: i64, transaction_hash: String, topics: Vec<String>, data: Vec<u8>) -> Self {
+        Self {
+            address,
+            block_number,
+            transaction_hash,
+            topics,
+            data
+        }
+    }
+}
+
 
 impl ChronicleEvent {
-    /// This function would be used to store the event to the db
-    /// params:
-    /// db_client: &mut Client - The db client [let mut client = Client::connect("postgresql://postgres:postgres@localhost/library", NoTls).unwrap();]
-    /// name: &str - The name of the table
-    pub fn create_new_db_table(&self, db_client: &mut Client, name: &str) -> Result<(), anyhow::Error> {
-        let executable = format!("
-            CREATE TABLE IF NOT EXISTS {name} (
-                id              SERIAL PRIMARY KEY,
-                address         VARCHAR NULL,
-                block_number    BIGINT NULL,
-                transaction_hash VARCHAR NULL,
-                topics          VARCHAR[] NULL,
-                data            BYTEA NULL
-            )
-        ");
-        db_client.batch_execute(&executable)?;
+    pub async fn store_event(&self, db_client: &mut Client, name: &str) -> Result<(), anyhow::Error> {
+        store_event_to_db(self, db_client, name)?;
 
         Ok(())
-    }
-
-    /// This function would be used to store the event to the db
-    /// params:
-    /// db_client: &mut Client - The db client [let mut client = Client::connect("postgresql://postgres:postgres@localhost/library", NoTls).unwrap();]
-    /// name: &str - The name of the table
-    pub fn store_event_to_db(&self, db_client: &mut Client, name: &str) -> Result<(), anyhow::Error> {
-        let executable = format!("
-            INSERT INTO {name} (address, block_number, transaction_hash, topics, data)
-            VALUES ($1, $2, $3, $4, $5)
-        ");
-        let stringified_topics: Vec<String> = self.topics.iter().map(|topic| topic.to_string()).collect();
-        let block_number = self.block_number as i64;
-        db_client.execute(&executable, &[
-            &self.address.to_string(),
-            &block_number,
-            &self.transaction_hash.to_string(),
-            &stringified_topics,
-            &self.data.to_vec(),
-        ])?;
-
-        Ok(())
-    }
-
-    /// This function would be used to get the event from the db with an filter
-    /// params:
-    /// db_client: &mut Client - The db client [let mut client = Client::connect("postgresql://postgres:postgres@localhost/library", NoTls).unwrap();]
-    /// name: &str - The name of the table
-    pub fn get_all_events(&self, db_client: &mut Client, name: &str) -> Result<Vec<>, anyhow::Error> {
-        let executable = format!("
-            SELECT * FROM {name}
-        ");
-        let rows = db_client.query(&executable, &[]).unwrap();
-        for row in rows {
-            let address: String = row.get(0);
-            let block_number: i64 = row.get(1);
-            let transaction_hash: String = row.get(2);
-            let topics: Vec<String> = row.get(3);
-            let data: Vec<u8> = row.get(4);
-            println!("address: {}, block_number: {}, transaction_hash: {}, topics: {:?}, data: {:?}", address, block_number, transaction_hash, topics, data);
-        }
-    }
-
-    /// This function would be used to get the event from the db with an filter
-    /// params:
-    /// db_client: &mut Client - The db client [let mut client = Client::connect("postgresql://postgres:postgres@localhost/library", NoTls).unwrap();]
-    /// name: &str - The name of the table
-    /// filter: Vec<String> - The filter to be used
-    pub fn get_all_events_with_filter(&self, db_client: &mut Client, name: &str, filter: Vec<String>) {
-        let filter_decoded = filter.join(", ");
-        let executable = format!("
-            SELECT {filter_decoded} FROM {name}
-        ");
-        let rows = db_client.query(&executable, &[]).unwrap();
-        for row in rows {
-            let address: String = row.get(0);
-            let block_number: i64 = row.get(1);
-            let transaction_hash: String = row.get(2);
-            let topics: Vec<String> = row.get(3);
-            let data: Vec<u8> = row.get(4);
-            println!("address: {}, block_number: {}, transaction_hash: {}, topics: {:?}, data: {:?}", address, block_number, transaction_hash, topics, data);
-        }
-    }
-
-    /// This function would be used to get the event from the db with a filter: the event hash
-    /// params:
-    /// db_client: &mut Client - The db client [let mut client = Client::connect("postgresql://postgres:postgres@localhost/library", NoTls).unwrap();]
-    /// name: &str - The name of the table
-    /// transaction_hash: String - The transaction hash
-    pub fn get_events_by_tx_hash(&self, db_client: &mut Client, name: &str, transaction_hash: String) {
-        let executable = format!("
-            SELECT * FROM {name} WHERE transaction_hash = $1
-        ");
-        let rows = db_client.query(&executable, &[&transaction_hash]).unwrap();
-        for row in rows {
-            let address: String = row.get(0);
-            let block_number: i64 = row.get(1);
-            let transaction_hash: String = row.get(2);
-            let topics: Vec<String> = row.get(3);
-            let data: Vec<u8> = row.get(4);
-            println!("address: {}, block_number: {}, transaction_hash: {}, topics: {:?}, data: {:?}", address, block_number, transaction_hash, topics, data);
-        }
-    }
-
-    /// This function would be used to get the event from the db with a filter: the block number
-    /// params:
-    /// db_client: &mut Client - The db client [let mut client = Client::connect("postgresql://postgres:postgres@localhost/library", NoTls).unwrap();]
-    /// name: &str - The name of the table
-    /// block_number: i64 - The block number
-    pub fn get_events_by_block_number(&self, db_client: &mut Client, name: &str, block_number: i64) {
-        let executable = format!("
-            SELECT * FROM {name} WHERE block_number = $1
-        ");
-        let rows = db_client.query(&executable, &[&block_number]).unwrap();
-        for row in rows {
-            let address: String = row.get(0);
-            let block_number: i64 = row.get(1);
-            let transaction_hash: String = row.get(2);
-            let topics: Vec<String> = row.get(3);
-            let data: Vec<u8> = row.get(4);
-            println!("address: {}, block_number: {}, transaction_hash: {}, topics: {:?}, data: {:?}", address, block_number, transaction_hash, topics, data);
-        }
     }
 }
