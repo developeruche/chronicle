@@ -45,3 +45,4 @@ alloy = { git = "https://github.com/CoinDao/alloy", features = [
     "pubsub"
 ] }
 futures-core = "0.3.30"
+postgres = "0.19.7"

@@ -68,7 +68,7 @@ pub fn decode_event(
 ) -> Result<DecodedEvent, anyhow::Error> {
     let event: DynSolEvent = DynSolEvent::new_unchecked(Some(topics[0]), indexed, decoder_format);
     let log_data = LogData::new_unchecked(topics, data);
-    let decoded_event = event.decode_log(&log_data, true).unwrap();
+    let decoded_event = event.decode_log(&log_data, true)?;
 
     Ok(decoded_event)
 }

@@ -11,3 +11,4 @@ anyhow.workspace = true
 serde_json.workspace = true
 async-trait.workspace = true
 alloy.workspace = true
+postgres.workspace = true
