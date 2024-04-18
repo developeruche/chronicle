@@ -150,6 +150,11 @@ impl ChronicleEvent {
         }
     }
 
+    /// This function would be used to get the event from the db with a filter: the event hash
+    /// params:
+    /// db_client: &mut Client - The db client [let mut client = Client::connect("postgresql://postgres:postgres@localhost/library", NoTls).unwrap();]
+    /// name: &str - The name of the table
+    /// transaction_hash: String - The transaction hash
     pub fn get_events_by_tx_hash(&self, db_client: &mut Client, name: &str, transaction_hash: String) {
         let executable = format!("
             SELECT * FROM {name} WHERE transaction_hash = $1
@@ -165,6 +170,11 @@ impl ChronicleEvent {
         }
     }
 
+    /// This function would be used to get the event from the db with a filter: the block number
+    /// params:
+    /// db_client: &mut Client - The db client [let mut client = Client::connect("postgresql://postgres:postgres@localhost/library", NoTls).unwrap();]
+    /// name: &str - The name of the table
+    /// block_number: i64 - The block number
     pub fn get_events_by_block_number(&self, db_client: &mut Client, name: &str, block_number: i64) {
         let executable = format!("
             SELECT * FROM {name} WHERE block_number = $1
