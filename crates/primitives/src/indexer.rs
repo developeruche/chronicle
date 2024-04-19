@@ -19,7 +19,7 @@ pub struct ChronicleEvent {
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct DisplayChronicleEvent {
     pub address: String,
-    pub block_number: i64,
+    pub block_number: String,
     pub transaction_hash: String,
     pub topics: Vec<String>,
     pub data: Vec<u8>,
@@ -79,7 +79,7 @@ impl From<Log> for ChronicleEvent {
 impl DisplayChronicleEvent {
     pub fn new(
         address: String,
-        block_number: i64,
+        block_number: String,
         transaction_hash: String,
         topics: Vec<String>,
         data: Vec<u8>,

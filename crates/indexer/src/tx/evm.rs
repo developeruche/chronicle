@@ -46,24 +46,25 @@ where
 #[cfg(test)]
 pub mod tests {
     use alloy::{primitives::address, providers::ProviderBuilder, rpc::client::WsConnect};
-
     use super::*;
 
-    // #[tokio::test]
-    // pub async fn test_subscribe_transactions_works() {
-    //     let rpc_url = "wss://eth.merkle.io";
 
-    //     // Create the provider.
-    //     let ws = WsConnect::new(rpc_url);
-    //     let provider = ProviderBuilder::new().on_ws(ws).await.unwrap();
-    //     let usdc_token_address = address!("a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48");
+    #[tokio::test]
+    #[ignore]
+    pub async fn test_subscribe_transactions_works() {
+        let rpc_url = "wss://eth.merkle.io";
 
-    //     let callback = |tx: Vec<Transaction>| {
-    //         println!("Received Tx: {:?}", tx);
-    //     };
+        // Create the provider.
+        let ws = WsConnect::new(rpc_url);
+        let provider = ProviderBuilder::new().on_ws(ws).await.unwrap();
+        let usdc_token_address = address!("a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48");
 
-    //     subscribe_transactions(usdc_token_address, provider, callback)
-    //         .await
-    //         .unwrap();
-    // }
+        let callback = |tx: Vec<Transaction>| {
+            println!("Received Tx: {:?}", tx);
+        };
+
+        subscribe_transactions(usdc_token_address, provider, callback)
+            .await
+            .unwrap();
+    }
 }

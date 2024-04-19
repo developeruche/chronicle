@@ -168,6 +168,7 @@ pub mod tests {
     }
 
     #[tokio::test]
+    #[ignore]
     async fn test_raw_subscribe_logs_can_be_decoded() {
         let rpc_url = "wss://eth.merkle.io";
 

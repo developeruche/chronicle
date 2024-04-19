@@ -2,6 +2,8 @@
 
 **Light weight, blazing fast blockchain indexer**
 
+### This is originally built for Educational purposes
+
 [Run](#running) | [Developer Docs](./docs)
 
 🚧 *Under active development, see [status](#status) below.* 🚧
