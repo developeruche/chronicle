@@ -204,7 +204,7 @@ pub fn get_events_by_block_number(
 
 #[cfg(test)]
 pub mod tests {
-    use alloy::{primitives::{address, b256, Bytes, B256}, providers::ProviderBuilder, rpc::client::WsConnect};
+    use alloy::primitives::{address, b256, Bytes};
     use postgres::NoTls;
     use super::*;
 
