@@ -1,6 +1,7 @@
 use crate::Task;
 use async_trait::async_trait;
 use chronicle_primitives::ServerConfig;
+use postgres::Client;
 use tokio_util::sync::CancellationToken;
 
 #[derive(Debug)]

@@ -12,6 +12,7 @@ use chronicle_primitives::{db::store_event_to_db, indexer::ChronicleEvent, inter
 use postgres::Client;
 
 pub struct EvmEventIndexer {
+    /// This is the name if this indexer instance, this is used for the DB table name
     name: String
 }
 
@@ -36,16 +37,18 @@ impl ChronicleEventIndexer for EvmEventIndexer {
         block_number: Self::BlockNumber,
         db_client: &mut Client,
     ) -> Result<(), anyhow::Error> {
-        let events = query_events(provider, addr, event_sig, block_number).await?;
+        let events = query_events(provider.clone(), addr, event_sig, block_number).await?;
 
         for event in events {
             store_event_to_db(&event, db_client, &self.name)?;
         }
 
+        self.subscribe_to_events(provider, vec![addr], event_sig, db_client).await?;
+
         Ok(())
     }
 
-    async fn subscribe_to_events<F>(
+    async fn subscribe_to_events(
         &self,
         provider: Self::SubProvider,
         addr: Vec<Self::ContractAddress>,

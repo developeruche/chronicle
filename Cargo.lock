@@ -1347,10 +1347,13 @@ dependencies = [
 name = "chronicle-tasks"
 version = "0.1.0-beta"
 dependencies = [
+ "alloy",
  "anyhow",
  "async-trait",
+ "chronicle-indexer",
  "chronicle-primitives",
  "futures",
+ "postgres",
  "tokio",
  "tokio-util",
  "tracing",

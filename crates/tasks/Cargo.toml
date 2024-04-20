@@ -14,7 +14,11 @@ tokio.workspace = true
 anyhow.workspace = true
 futures.workspace = true
 tracing.workspace = true
+alloy.workspace = true
+postgres.workspace = true
+
 
 
 tokio-util = "0.7.8"
 chronicle-primitives = { path = "../../crates/primitives" }
+chronicle-indexer = { path = "../../crates/indexer" }

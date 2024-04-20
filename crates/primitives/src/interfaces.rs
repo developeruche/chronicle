@@ -23,7 +23,7 @@ pub trait ChronicleEventIndexer {
 
     /// This creates a filter and subscribes to an event returning the event
     /// stream <T: Stream<Item = Resp> + Unpin>
-    async fn subscribe_to_events<F>(
+    async fn subscribe_to_events(
         &self,
         provider: Self::SubProvider,
         addr: Vec<Self::ContractAddress>,
