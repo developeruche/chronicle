@@ -3,8 +3,7 @@ use alloy::{
     rpc::types::eth::{Log, Transaction},
 };
 use async_graphql::SimpleObject;
-use postgres::Client;
-use serde::{Deserialize, Serialize}; // SimpleObject
+use serde::{Deserialize, Serialize};
 
 use crate::db::store_event_to_db;
 

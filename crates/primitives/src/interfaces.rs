@@ -1,6 +1,5 @@
 use crate::indexer::ChronicleTransaction;
 use async_trait::async_trait;
-use postgres::Client;
 
 /// This event indexer triat would be shared across all supported chains
 #[async_trait]

@@ -16,7 +16,6 @@ impl ChronicleQuery {
         name: String,
     ) -> Vec<DisplayChronicleEvent> {
         let config = cxt.data_unchecked::<ServerConfig>();
-        // let mut db_client = Client::connect(&config.db_url, NoTls).expect("Could not connect to the db");
         let mut db_client = create_db_instance(&config.db_url)
             .await
             .expect("Could not connect to the db");
@@ -27,19 +26,37 @@ impl ChronicleQuery {
         events
     }
 
-    // async fn get_events_by_tx_hash<'a>(&self, cxt: &Context<'a>, name: String, transaction_hash: String) -> Vec<DisplayChronicleEvent> {
-    //     let config = cxt.data_unchecked::<ServerConfig>();
-    //     let mut db_client = Client::connect(&config.db_url, NoTls).expect("Could not connect to the db");
-    //     let events = get_events_by_tx_hash(&mut db_client, &name, transaction_hash).expect("Could not get events from db");
+    async fn get_events_by_tx_hash<'a>(
+        &self,
+        cxt: &Context<'a>,
+        name: String,
+        transaction_hash: String,
+    ) -> Vec<DisplayChronicleEvent> {
+        let config = cxt.data_unchecked::<ServerConfig>();
+        let mut db_client = create_db_instance(&config.db_url)
+            .await
+            .expect("Could not connect to the db");
+        let events = get_events_by_tx_hash(&mut db_client, &name, transaction_hash)
+            .await
+            .expect("Could not get events from db");
 
-    //     events
-    // }
+        events
+    }
 
-    // async fn get_events_by_block_number<'a>(&self, cxt: &Context<'a>, name: String, block_number: String) -> Vec<DisplayChronicleEvent> {
-    //     let config = cxt.data_unchecked::<ServerConfig>();
-    //     let mut db_client = Client::connect(&config.db_url, NoTls).expect("Could not connect to the db");
-    //     let events = get_events_by_block_number(&mut db_client, &name, block_number).expect("Could not get events from db");
+    async fn get_events_by_block_number<'a>(
+        &self,
+        cxt: &Context<'a>,
+        name: String,
+        block_number: String,
+    ) -> Vec<DisplayChronicleEvent> {
+        let config = cxt.data_unchecked::<ServerConfig>();
+        let mut db_client = create_db_instance(&config.db_url)
+            .await
+            .expect("Could not connect to the db");
+        let events = get_events_by_block_number(&mut db_client, &name, block_number)
+            .await
+            .expect("Could not get events from db");
 
-    //     events
-    // }
+        events
+    }
 }
