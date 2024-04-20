@@ -1,5 +1,6 @@
 use crate::indexer::{ChronicleEvent, ChronicleTransaction};
 use async_trait::async_trait;
+use postgres::Client;
 
 /// This event indexer triat would be shared across all supported chains
 #[async_trait]
@@ -17,7 +18,8 @@ pub trait ChronicleEventIndexer {
         addr: Self::ContractAddress,
         event_sig: Self::EventSignature,
         block_nuber: Self::BlockNumber,
-    ) -> Result<Vec<ChronicleEvent>, anyhow::Error>;
+        db_client: &mut Client,
+    ) -> Result<(), anyhow::Error>;
 
     /// This creates a filter and subscribes to an event returning the event
     /// stream <T: Stream<Item = Resp> + Unpin>
@@ -26,9 +28,8 @@ pub trait ChronicleEventIndexer {
         provider: Self::SubProvider,
         addr: Vec<Self::ContractAddress>,
         event_sig: Self::EventSignature,
-        callback: F,
-    ) where
-        F: FnMut(ChronicleEvent) + Send;
+        db_client: &mut Client,
+    ) -> Result<(), anyhow::Error>;
 }
 
 /// This transaction indexer trait would be used across all supported chains

@@ -8,9 +8,18 @@ use alloy::{
     rpc::types::eth::BlockNumberOrTag,
 };
 use async_trait::async_trait;
-use chronicle_primitives::{indexer::ChronicleEvent, interfaces::ChronicleEventIndexer};
+use chronicle_primitives::{db::store_event_to_db, indexer::ChronicleEvent, interfaces::ChronicleEventIndexer};
+use postgres::Client;
 
-pub struct EvmEventIndexer {}
+pub struct EvmEventIndexer {
+    name: String
+}
+
+impl EvmEventIndexer {
+    pub fn new(name: String) -> Self {
+        Self { name }
+    }
+}
 
 #[async_trait]
 impl ChronicleEventIndexer for EvmEventIndexer {
@@ -25,8 +34,15 @@ impl ChronicleEventIndexer for EvmEventIndexer {
         addr: Self::ContractAddress,
         event_sig: Self::EventSignature,
         block_number: Self::BlockNumber,
-    ) -> Result<Vec<ChronicleEvent>, anyhow::Error> {
-        query_events(provider, addr, event_sig, block_number).await
+        db_client: &mut Client,
+    ) -> Result<(), anyhow::Error> {
+        let events = query_events(provider, addr, event_sig, block_number).await?;
+
+        for event in events {
+            store_event_to_db(&event, db_client, &self.name)?;
+        }
+
+        Ok(())
     }
 
     async fn subscribe_to_events<F>(
@@ -34,10 +50,15 @@ impl ChronicleEventIndexer for EvmEventIndexer {
         provider: Self::SubProvider,
         addr: Vec<Self::ContractAddress>,
         event_sig: Self::EventSignature,
-        callback: F,
-    ) where
-        F: FnMut(ChronicleEvent) + Send,
+        db_client: &mut Client,
+    ) -> Result<(), anyhow::Error>
     {
+        let callback = |log: ChronicleEvent| {
+            store_event_to_db(&log, db_client, &self.name).unwrap();
+        };
+
         subscribe_to_events(provider, addr, event_sig, callback).await;
+
+        Ok(())
     }
 }
