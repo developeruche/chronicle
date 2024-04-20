@@ -10,6 +10,7 @@ anyhow.workspace = true
 tokio.workspace = true
 tracing.workspace = true
 postgres.workspace = true
+tokio-postgres.workspace = true
 
 
 async-graphql = "7.0.3"

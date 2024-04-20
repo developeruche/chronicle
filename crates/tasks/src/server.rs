@@ -1,8 +1,9 @@
 use crate::Task;
+use anyhow::bail;
 use async_trait::async_trait;
 use chronicle_primitives::ServerConfig;
 use chronicle_server::{query::ChronicleQuery, run_chronicle_server};
-use tokio::select;
+use tokio::{select, try_join};
 use tokio_util::sync::CancellationToken;
 use tracing::info;
 
@@ -14,7 +15,7 @@ pub struct ServerTask {
 #[async_trait]
 impl Task for ServerTask {
     async fn run(mut self: Box<Self>, shutdown_token: CancellationToken) -> anyhow::Result<()> {
-        tokio::spawn(async move {
+        let server_handle = tokio::spawn(async move {
             select! {
                 server = run_chronicle_server(self.config, ChronicleQuery) => {
                     // Want this indexing to halt before
@@ -27,6 +28,13 @@ impl Task for ServerTask {
                 }
             }
         });
+
+        match try_join!(server_handle) {
+            Ok(_) => {
+                info!("Server task completed");
+            }
+            Err(e) => bail!("Error running server: {:?}", e),
+        }
         Ok(())
     }
 }

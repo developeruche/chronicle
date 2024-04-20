@@ -28,9 +28,9 @@ pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut tasks = vec![ServerTask::new(server_config).boxed()];
 
-    for indexer_config in indexer_configs {
-        tasks.push(IndexerTask::new(indexer_config).boxed());
-    }
+    // for indexer_config in indexer_configs {
+    //     tasks.push(IndexerTask::new(indexer_config).boxed());
+    // }
 
     spawn_tasks(tasks, tokio::signal::ctrl_c()).await;
 
