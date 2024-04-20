@@ -1,19 +1,16 @@
 use crate::Task;
+use alloy::{providers::ProviderBuilder, rpc::client::WsConnect};
 use async_trait::async_trait;
 use chronicle_indexer::events::evm::EvmEventIndexer;
-use chronicle_primitives::{IndexerConfig, StateMachine, interfaces::ChronicleEventIndexer};
+use chronicle_primitives::{interfaces::ChronicleEventIndexer, IndexerConfig, StateMachine};
 use postgres::{Client, NoTls};
 use tokio::select;
 use tokio_util::sync::CancellationToken;
-use alloy::{
-    providers::ProviderBuilder,
-    rpc::client::WsConnect,
-};
 use tracing::info;
 
 #[derive(Debug)]
 pub struct IndexerTask {
-    pub config: IndexerConfig
+    pub config: IndexerConfig,
 }
 
 #[async_trait]
@@ -29,28 +26,25 @@ impl Task for IndexerTask {
                 // This queries events that have happened from this block number and stores them in the database
                 // It also subscribes to new events and stores them in the database
                 tokio::spawn(async move {
-                    loop {
-                        select! {
-                            event_n_sub = evm_event_indexer.query_events(
-                                provider.clone(),
-                                self.config.address.clone().parse().expect("CONFIG address could not be parsed"),
-                                self.config.event_signature.clone().parse().expect("CONFIG event signature is missing"),
-                                self.config.block_number.into(),
-                                &mut client,
-                            ) => {
+                    select! {
+                        event_n_sub = evm_event_indexer.query_events(
+                            provider.clone(),
+                            self.config.address.clone().parse().expect("CONFIG address could not be parsed"),
+                            self.config.event_signature.clone().parse().expect("CONFIG event signature is missing"),
+                            self.config.block_number.into(),
+                            &mut client,
+                        ) => {
+                            // Want this indexing to halt before
+                            if event_n_sub.is_err() {
                                 info!("Event subscription error, exitting now.");
-                                // Want this indexing to halt before
-                                event_n_sub.unwrap();
                             }
-                            _ = shutdown_token.cancelled() => {
-                                info!("Shutting down chain watcher");
-                                break;
-                            }
+                        }
+                        _ = shutdown_token.cancelled() => {
+                            info!("Shutting down chain watcher");
                         }
                     }
                 });
-
-            },
+            }
             StateMachine::PARACHAIN => {}
         }
         Ok(())

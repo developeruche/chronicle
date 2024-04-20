@@ -8,12 +8,14 @@ use alloy::{
     rpc::types::eth::BlockNumberOrTag,
 };
 use async_trait::async_trait;
-use chronicle_primitives::{db::store_event_to_db, indexer::ChronicleEvent, interfaces::ChronicleEventIndexer};
+use chronicle_primitives::{
+    db::store_event_to_db, indexer::ChronicleEvent, interfaces::ChronicleEventIndexer,
+};
 use postgres::Client;
 
 pub struct EvmEventIndexer {
     /// This is the name if this indexer instance, this is used for the DB table name
-    name: String
+    name: String,
 }
 
 impl EvmEventIndexer {
@@ -43,7 +45,8 @@ impl ChronicleEventIndexer for EvmEventIndexer {
             store_event_to_db(&event, db_client, &self.name)?;
         }
 
-        self.subscribe_to_events(provider, vec![addr], event_sig, db_client).await?;
+        self.subscribe_to_events(provider, vec![addr], event_sig, db_client)
+            .await?;
 
         Ok(())
     }
@@ -54,8 +57,7 @@ impl ChronicleEventIndexer for EvmEventIndexer {
         addr: Vec<Self::ContractAddress>,
         event_sig: Self::EventSignature,
         db_client: &mut Client,
-    ) -> Result<(), anyhow::Error>
-    {
+    ) -> Result<(), anyhow::Error> {
         let callback = |log: ChronicleEvent| {
             store_event_to_db(&log, db_client, &self.name).unwrap();
         };

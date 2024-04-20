@@ -7,9 +7,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum StateMachine {
     EVM,
-    PARACHAIN
+    PARACHAIN,
 }
-
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Config {
@@ -18,7 +17,7 @@ pub struct Config {
     /// This is a list of all the indexer Config
     pub indexer: Vec<IndexerConfig>,
     /// Server config
-    pub server: ServerConfig
+    pub server: ServerConfig,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -42,9 +41,8 @@ pub struct IndexerConfig {
     /// This is the block number to start indexing from
     pub block_number: u64,
     /// This is the URL of the database
-    pub db_url: String
+    pub db_url: String,
 }
-
 
 impl From<String> for StateMachine {
     fn from(s: String) -> Self {
@@ -52,7 +50,7 @@ impl From<String> for StateMachine {
         match s {
             "EVM" => Self::EVM,
             "PARACHAIN" => Self::PARACHAIN,
-            _ => panic!("Invalid state machine")
+            _ => panic!("Invalid state machine"),
         }
     }
 }

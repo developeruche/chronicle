@@ -45,9 +45,8 @@ where
 
 #[cfg(test)]
 pub mod tests {
-    use alloy::{primitives::address, providers::ProviderBuilder, rpc::client::WsConnect};
     use super::*;
-
+    use alloy::{primitives::address, providers::ProviderBuilder, rpc::client::WsConnect};
 
     #[tokio::test]
     #[ignore]

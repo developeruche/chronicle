@@ -24,22 +24,15 @@ pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
     //indexer config
     let indexer_configs = config.clone().indexer;
 
-
     tracing::info!("Starting Chronicle with config: {:?}", config.clone());
 
-    let mut tasks = vec![
-        ServerTask::new(server_config).boxed(),
-    ];
+    let mut tasks = vec![ServerTask::new(server_config).boxed()];
 
     for indexer_config in indexer_configs {
         tasks.push(IndexerTask::new(indexer_config).boxed());
     }
 
-    spawn_tasks(
-        tasks,
-        tokio::signal::ctrl_c(),
-    )
-    .await;
+    spawn_tasks(tasks, tokio::signal::ctrl_c()).await;
 
     Ok(())
 }
