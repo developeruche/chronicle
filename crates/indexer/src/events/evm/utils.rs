@@ -5,8 +5,8 @@ use alloy::{
     pubsub::PubSubFrontend,
     rpc::types::eth::{BlockNumberOrTag, Filter},
 };
-use chronicle_primitives::indexer::ChronicleEvent;
-use futures_core::stream::Stream;
+use chronicle_primitives::{db::store_event_to_db, indexer::ChronicleEvent};
+use futures_core::{stream::Stream, Future};
 use futures_util::stream::StreamExt;
 
 pub type EventStream<T> = Box<dyn Stream<Item = T> + Unpin>;
@@ -26,13 +26,13 @@ pub async fn query_events(
     Ok(chronicle_logs)
 }
 
-pub async fn subscribe_to_events<F>(
+pub async fn subscribe_to_events(
     provider: RootProvider<PubSubFrontend>,
     addr: Vec<Address>,
     event_sig: B256,
-    mut callback: F,
-) where
-    F: FnMut(ChronicleEvent) + Send,
+    client: &mut tokio_postgres::Client,
+    name: &str
+)
 {
     let filter = Filter::new()
         .address(addr)
@@ -46,7 +46,7 @@ pub async fn subscribe_to_events<F>(
     let mut stream = sub.into_stream();
 
     while let Some(log) = stream.next().await {
-        callback(log.into());
+        store_event_to_db(&log.into(), client, name).await.expect("Failed to store event to db");
     }
 }
 
@@ -81,6 +81,10 @@ pub mod tests {
         providers::ProviderBuilder,
         rpc::client::WsConnect,
     };
+    use chronicle_primitives::db::create_db_instance;
+
+    const DB_URL: &str = "host=localhost user=postgres";
+    const NAME: &str = "events";
 
     #[tokio::test]
     #[ignore]
@@ -151,18 +155,15 @@ pub mod tests {
         let transfer_event_signature =
             b256!("ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef");
 
-        let mut x = 0;
 
-        let callback = |log: ChronicleEvent| {
-            println!("Received log: {:?}", log);
-            x += 1;
-        };
+        let mut client = create_db_instance(&DB_URL.into()).await.expect("Could not create db instance");
 
         subscribe_to_events(
             provider,
             vec![uniswap_token_address],
             transfer_event_signature,
-            callback,
+            &mut client,
+            "events"
         )
         .await;
     }

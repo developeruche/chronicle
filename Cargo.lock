@@ -1316,6 +1316,7 @@ dependencies = [
  "postgres",
  "serde_json",
  "tokio",
+ "tokio-postgres",
 ]
 
 [[package]]
@@ -1330,6 +1331,7 @@ dependencies = [
  "serde",
  "serde_json",
  "tokio",
+ "tokio-postgres",
 ]
 
 [[package]]

@@ -99,10 +99,10 @@ impl DisplayChronicleEvent {
 impl ChronicleEvent {
     pub async fn store_event(
         &self,
-        db_client: &mut Client,
+        db_client: &mut tokio_postgres::Client,
         name: &str,
     ) -> Result<(), anyhow::Error> {
-        store_event_to_db(self, db_client, name)?;
+        store_event_to_db(self, db_client, name).await?;
 
         Ok(())
     }

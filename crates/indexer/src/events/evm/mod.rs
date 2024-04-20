@@ -37,12 +37,12 @@ impl ChronicleEventIndexer for EvmEventIndexer {
         addr: Self::ContractAddress,
         event_sig: Self::EventSignature,
         block_number: Self::BlockNumber,
-        db_client: &mut Client,
+        db_client: &mut tokio_postgres::Client,
     ) -> Result<(), anyhow::Error> {
         let events = query_events(provider.clone(), addr, event_sig, block_number).await?;
 
         for event in events {
-            store_event_to_db(&event, db_client, &self.name)?;
+            store_event_to_db(&event, db_client, &self.name).await?;
         }
 
         self.subscribe_to_events(provider, vec![addr], event_sig, db_client)
@@ -56,13 +56,13 @@ impl ChronicleEventIndexer for EvmEventIndexer {
         provider: Self::SubProvider,
         addr: Vec<Self::ContractAddress>,
         event_sig: Self::EventSignature,
-        db_client: &mut Client,
+        db_client: &mut tokio_postgres::Client,
     ) -> Result<(), anyhow::Error> {
-        let callback = |log: ChronicleEvent| {
-            store_event_to_db(&log, db_client, &self.name).unwrap();
-        };
+        // let callback = |log: ChronicleEvent| async move {
+        //     store_event_to_db(&log, db_client, &self.name);
+        // };
 
-        subscribe_to_events(provider, addr, event_sig, callback).await;
+        subscribe_to_events(provider, addr, event_sig, db_client, &self.name).await;
 
         Ok(())
     }

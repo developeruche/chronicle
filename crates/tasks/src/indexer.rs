@@ -2,8 +2,8 @@ use crate::Task;
 use alloy::{providers::ProviderBuilder, rpc::client::WsConnect};
 use async_trait::async_trait;
 use chronicle_indexer::events::evm::EvmEventIndexer;
-use chronicle_primitives::{interfaces::ChronicleEventIndexer, IndexerConfig, StateMachine};
-use postgres::{Client, NoTls};
+use chronicle_primitives::{db::create_db_instance, interfaces::ChronicleEventIndexer, IndexerConfig, StateMachine};
+use postgres::NoTls;
 use tokio::select;
 use tokio_util::sync::CancellationToken;
 use tracing::info;
@@ -16,7 +16,7 @@ pub struct IndexerTask {
 #[async_trait]
 impl Task for IndexerTask {
     async fn run(mut self: Box<Self>, shutdown_token: CancellationToken) -> anyhow::Result<()> {
-        let mut client = Client::connect(&self.config.db_url, NoTls)?;
+        let mut client = create_db_instance(&self.config.db_url).await.expect("Could not create db instance");
         let ws = WsConnect::new(self.config.rpc_url.clone());
         let provider = ProviderBuilder::new().on_ws(ws).await.unwrap();
         match self.config.state_machine.clone().into() {

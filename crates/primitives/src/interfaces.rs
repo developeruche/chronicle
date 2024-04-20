@@ -18,7 +18,7 @@ pub trait ChronicleEventIndexer {
         addr: Self::ContractAddress,
         event_sig: Self::EventSignature,
         block_nuber: Self::BlockNumber,
-        db_client: &mut Client,
+        db_client: &mut tokio_postgres::Client,
     ) -> Result<(), anyhow::Error>;
 
     /// This creates a filter and subscribes to an event returning the event
@@ -28,7 +28,7 @@ pub trait ChronicleEventIndexer {
         provider: Self::SubProvider,
         addr: Vec<Self::ContractAddress>,
         event_sig: Self::EventSignature,
-        db_client: &mut Client,
+        db_client: &mut tokio_postgres::Client,
     ) -> Result<(), anyhow::Error>;
 }
 
