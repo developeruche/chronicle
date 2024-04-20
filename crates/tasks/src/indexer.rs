@@ -38,6 +38,7 @@ impl Task for IndexerTask {
                                 self.config.block_number.into(),
                                 &mut client,
                             ) => {
+                                info!("Event subscription error, exitting now.");
                                 // Want this indexing to halt before
                                 event_n_sub.unwrap();
                             }
