@@ -1,4 +1,4 @@
-use crate::indexer::{ChronicleEvent, ChronicleTransaction};
+use crate::indexer::ChronicleTransaction;
 use async_trait::async_trait;
 use postgres::Client;
 

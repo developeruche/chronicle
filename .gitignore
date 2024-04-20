@@ -16,3 +16,4 @@
 *.profraw
 .DS_Store
 .helix
+.config.toml

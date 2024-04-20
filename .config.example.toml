@@ -1,0 +1,14 @@
+name = "project name"
+
+[[indexer]]
+event_name = "event-name"
+state_machine = "EVM"
+rpc_url = "wss://eth.merkle.io"
+address = "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984" # UNI token
+event_signature = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef" # Transfer(address,address,uint256)
+block_number = 19697566
+db_url = "postgresql://postgres:postgres@localhost:5432/user"
+
+[server]
+db_url = "postgresql://postgres:postgres@localhost:5432/user"
+server_url = "127.0.0.1:8001"
