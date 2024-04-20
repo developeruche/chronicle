@@ -11,7 +11,6 @@ use async_trait::async_trait;
 use chronicle_primitives::{
     db::store_event_to_db, indexer::ChronicleEvent, interfaces::ChronicleEventIndexer,
 };
-use postgres::Client;
 
 pub struct EvmEventIndexer {
     /// This is the name if this indexer instance, this is used for the DB table name
@@ -58,10 +57,6 @@ impl ChronicleEventIndexer for EvmEventIndexer {
         event_sig: Self::EventSignature,
         db_client: &mut tokio_postgres::Client,
     ) -> Result<(), anyhow::Error> {
-        // let callback = |log: ChronicleEvent| async move {
-        //     store_event_to_db(&log, db_client, &self.name);
-        // };
-
         subscribe_to_events(provider, addr, event_sig, db_client, &self.name).await;
 
         Ok(())

@@ -9,7 +9,7 @@ use tracing::info;
 
 #[derive(Debug)]
 pub struct ServerTask {
-    pub config: ServerConfig
+    pub config: ServerConfig,
 }
 
 #[async_trait]

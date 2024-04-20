@@ -5,7 +5,10 @@ use postgres::NoTls;
 /// params:
 /// db_client: &mut Client - The db client [let mut client = Client::connect("postgresql://postgres:postgres@localhost/library", NoTls)?;]
 /// name: &str - The name of the table
-pub async fn create_new_event_db_table(db_client: &mut tokio_postgres::Client, name: &str) -> Result<(), anyhow::Error> {
+pub async fn create_new_event_db_table(
+    db_client: &mut tokio_postgres::Client,
+    name: &str,
+) -> Result<(), anyhow::Error> {
     let executable = format!(
         "
             CREATE TABLE IF NOT EXISTS {name} (
@@ -44,20 +47,21 @@ pub async fn store_event_to_db(
         .map(|topic| topic.to_string())
         .collect::<Vec<String>>()
         .join(", ");
-    db_client.execute(
-        &executable,
-        &[
-            &event.address.to_string(),
-            &event.block_number.to_string(),
-            &event.transaction_hash.to_string(),
-            &stringified_topics,
-            &event.data.to_vec(),
-        ],
-    ).await?;
+    db_client
+        .execute(
+            &executable,
+            &[
+                &event.address.to_string(),
+                &event.block_number.to_string(),
+                &event.transaction_hash.to_string(),
+                &stringified_topics,
+                &event.data.to_vec(),
+            ],
+        )
+        .await?;
 
     Ok(())
 }
-
 
 /// This function would be used to get the event from the db with an filter
 /// params:
@@ -205,20 +209,18 @@ pub async fn get_events_by_block_number(
     Ok(events)
 }
 
-
 pub async fn create_db_instance(url: &String) -> Result<tokio_postgres::Client, anyhow::Error> {
-    let (client, connection) =
-            tokio_postgres::connect(url.as_str(), NoTls).await?;
+    let (client, connection) = tokio_postgres::connect(url.as_str(), NoTls).await?;
 
-        // The connection object performs the actual communication with the database,
-        // so spawn it off to run on its own.
-        tokio::spawn(async move {
-            if let Err(e) = connection.await {
-                eprintln!("connection error: {}", e);
-            }
-        });
+    // The connection object performs the actual communication with the database,
+    // so spawn it off to run on its own.
+    tokio::spawn(async move {
+        if let Err(e) = connection.await {
+            eprintln!("connection error: {}", e);
+        }
+    });
 
-        Ok(client)
+    Ok(client)
 }
 
 #[cfg(test)]
@@ -233,7 +235,9 @@ pub mod tests {
     #[tokio::test]
     #[ignore]
     pub async fn test_can_create_db_table_for_event() {
-        let mut client = create_db_instance(&DB_URL.into()).await.expect("Could not create db instance");
+        let mut client = create_db_instance(&DB_URL.into())
+            .await
+            .expect("Could not create db instance");
 
         let result = create_new_event_db_table(&mut client, NAME).await;
         assert!(result.is_ok());
@@ -242,7 +246,9 @@ pub mod tests {
     #[tokio::test]
     #[ignore]
     pub async fn test_should_store_event_to_db() {
-        let mut client = create_db_instance(&DB_URL.into()).await.expect("Could not create db instance");
+        let mut client = create_db_instance(&DB_URL.into())
+            .await
+            .expect("Could not create db instance");
 
         let demo_event = ChronicleEvent {
             address: address!("88da6bf26964af9d7eed9e03e53415d37aa96045"),
@@ -264,7 +270,9 @@ pub mod tests {
     #[tokio::test]
     #[ignore]
     pub async fn test_should_successfully_read_from_db() {
-        let mut client = create_db_instance(&DB_URL.into()).await.expect("Could not create db instance");
+        let mut client = create_db_instance(&DB_URL.into())
+            .await
+            .expect("Could not create db instance");
         let get_event_result = get_all_events(&mut client, NAME).await.unwrap();
 
         for row in get_event_result {
@@ -275,7 +283,9 @@ pub mod tests {
     #[tokio::test]
     #[ignore]
     pub async fn test_should_successfully_read_from_db_with_filter() {
-        let mut client = create_db_instance(&DB_URL.into()).await.expect("Could not create db instance");
+        let mut client = create_db_instance(&DB_URL.into())
+            .await
+            .expect("Could not create db instance");
 
         let filter = vec![
             "address".to_string(),
@@ -284,16 +294,22 @@ pub mod tests {
             "topics".to_string(),
             "data".to_string(),
         ];
-        get_all_events_with_filter(&mut client, NAME, filter).await.unwrap();
+        get_all_events_with_filter(&mut client, NAME, filter)
+            .await
+            .unwrap();
     }
 
     #[tokio::test]
     #[ignore]
     pub async fn test_should_successfully_read_from_db_with_filter_by_tx_hash() {
-        let mut client = create_db_instance(&DB_URL.into()).await.expect("Could not create db instance");
+        let mut client = create_db_instance(&DB_URL.into())
+            .await
+            .expect("Could not create db instance");
         let filter =
             "0x000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045".to_string();
-        let result = get_events_by_tx_hash(&mut client, NAME, filter).await.unwrap();
+        let result = get_events_by_tx_hash(&mut client, NAME, filter)
+            .await
+            .unwrap();
 
         for row in result {
             println!("Working: {:?}", row)
@@ -303,9 +319,13 @@ pub mod tests {
     #[tokio::test]
     #[ignore]
     pub async fn test_should_successfully_read_from_db_with_filter_by_block_number() {
-        let mut client = create_db_instance(&DB_URL.into()).await.expect("Could not create db instance");
+        let mut client = create_db_instance(&DB_URL.into())
+            .await
+            .expect("Could not create db instance");
         let filter = "5".to_string();
-        let result = get_events_by_block_number(&mut client, NAME, filter).await.unwrap();
+        let result = get_events_by_block_number(&mut client, NAME, filter)
+            .await
+            .unwrap();
 
         for row in result {
             println!("Working: {:?}", row)

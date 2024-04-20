@@ -6,7 +6,6 @@ use async_graphql::SimpleObject;
 use postgres::Client;
 use serde::{Deserialize, Serialize}; // SimpleObject
 
-
 use crate::db::store_event_to_db;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]

@@ -6,10 +6,7 @@ use alloy::{
     rpc::types::eth::{BlockNumberOrTag, Filter},
 };
 use chronicle_primitives::{db::store_event_to_db, indexer::ChronicleEvent};
-use futures_core::{stream::Stream, Future};
 use futures_util::stream::StreamExt;
-
-pub type EventStream<T> = Box<dyn Stream<Item = T> + Unpin>;
 
 pub async fn query_events(
     provider: RootProvider<PubSubFrontend>,
@@ -23,6 +20,7 @@ pub async fn query_events(
         .from_block(block_number);
     let log = provider.get_logs(&filter).await?;
     let chronicle_logs: Vec<ChronicleEvent> = log.into_iter().map(|log| log.into()).collect();
+
     Ok(chronicle_logs)
 }
 
@@ -31,9 +29,8 @@ pub async fn subscribe_to_events(
     addr: Vec<Address>,
     event_sig: B256,
     client: &mut tokio_postgres::Client,
-    name: &str
-)
-{
+    name: &str,
+) {
     let filter = Filter::new()
         .address(addr)
         .event_signature(event_sig)
@@ -46,7 +43,9 @@ pub async fn subscribe_to_events(
     let mut stream = sub.into_stream();
 
     while let Some(log) = stream.next().await {
-        store_event_to_db(&log.into(), client, name).await.expect("Failed to store event to db");
+        store_event_to_db(&log.into(), client, name)
+            .await
+            .expect("Failed to store event to db");
     }
 }
 
@@ -155,15 +154,16 @@ pub mod tests {
         let transfer_event_signature =
             b256!("ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef");
 
-
-        let mut client = create_db_instance(&DB_URL.into()).await.expect("Could not create db instance");
+        let mut client = create_db_instance(&DB_URL.into())
+            .await
+            .expect("Could not create db instance");
 
         subscribe_to_events(
             provider,
             vec![uniswap_token_address],
             transfer_event_signature,
             &mut client,
-            "events"
+            NAME,
         )
         .await;
     }

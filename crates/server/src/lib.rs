@@ -9,8 +9,6 @@ use chronicle_primitives::ServerConfig;
 use tokio::net::TcpListener;
 pub mod query;
 
-
-
 /// This function is used to serve the graphQL server and GraphiQL IDE.
 async fn graphiql() -> impl IntoResponse {
     response::Html(GraphiQLSource::build().endpoint("/").finish())
