@@ -1,12 +1,12 @@
 use crate::Task;
 use alloy::{providers::ProviderBuilder, rpc::client::WsConnect};
+use anyhow::bail;
 use async_trait::async_trait;
 use chronicle_indexer::events::evm::EvmEventIndexer;
 use chronicle_primitives::{
     db::create_db_instance, interfaces::ChronicleEventIndexer, IndexerConfig, StateMachine,
 };
-use postgres::NoTls;
-use tokio::select;
+use tokio::{select, try_join};
 use tokio_util::sync::CancellationToken;
 use tracing::info;
 
@@ -29,7 +29,7 @@ impl Task for IndexerTask {
 
                 // This queries events that have happened from this block number and stores them in the database
                 // It also subscribes to new events and stores them in the database
-                tokio::spawn(async move {
+                let evm_indexer_handle = tokio::spawn(async move {
                     select! {
                         event_n_sub = evm_event_indexer.query_events(
                             provider.clone(),
@@ -48,6 +48,14 @@ impl Task for IndexerTask {
                         }
                     }
                 });
+
+                match try_join!(evm_indexer_handle) {
+                    Ok(_) => {
+                        info!("Server task completed");
+                    }
+                    Err(e) => bail!("Error running server: {:?}", e),
+                }
+
             }
             StateMachine::PARACHAIN => {}
         }

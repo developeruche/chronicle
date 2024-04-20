@@ -4,7 +4,7 @@ use chronicle_primitives::{
     indexer::DisplayChronicleEvent,
     ServerConfig,
 };
-use postgres::NoTls;
+
 
 pub struct ChronicleQuery;
 
