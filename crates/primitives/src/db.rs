@@ -58,6 +58,7 @@ pub fn store_event_to_db(
     Ok(())
 }
 
+
 /// This function would be used to get the event from the db with an filter
 /// params:
 /// db_client: &mut Client - The db client [let mut client = Client::connect("postgresql://postgres:postgres@localhost/library", NoTls)?;]
@@ -98,6 +99,8 @@ pub fn get_all_events(
 /// db_client: &mut Client - The db client [let mut client = Client::connect("postgresql://postgres:postgres@localhost/library", NoTls);]
 /// name: &str - The name of the table
 /// filter: Vec<String> - The filter to be used [address, block_number, transaction_hash]
+///
+/// TODO:: Figure out how return data can ba handle
 pub fn get_all_events_with_filter(
     db_client: &mut Client,
     name: &str,
@@ -141,8 +144,8 @@ pub fn get_events_by_tx_hash(
     let mut events = Vec::new();
     let executable = format!(
         "
-        SELECT * FROM {name} WHERE transaction_hash = $1
-    "
+            SELECT * FROM {name} WHERE transaction_hash = $1
+        "
     );
     let rows = db_client.query(&executable, &[&transaction_hash])?;
     for row in rows {

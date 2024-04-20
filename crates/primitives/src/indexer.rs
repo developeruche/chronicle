@@ -2,8 +2,10 @@ use alloy::{
     primitives::{Address, Bytes, B256, U256},
     rpc::types::eth::{Log, Transaction},
 };
+use async_graphql::SimpleObject;
 use postgres::Client;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize}; // SimpleObject
+
 
 use crate::db::store_event_to_db;
 
@@ -16,7 +18,7 @@ pub struct ChronicleEvent {
     pub data: Bytes,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default, SimpleObject)]
 pub struct DisplayChronicleEvent {
     pub address: String,
     pub block_number: String,

@@ -24,6 +24,8 @@ pub struct Config {
 pub struct ServerConfig {
     /// This is the URL of the database
     pub db_url: String,
+    /// This is the URL of the server
+    pub server_url: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

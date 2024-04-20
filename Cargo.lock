@@ -1324,6 +1324,7 @@ version = "0.1.0"
 dependencies = [
  "alloy",
  "anyhow",
+ "async-graphql",
  "async-trait",
  "postgres",
  "serde",
@@ -1339,6 +1340,8 @@ dependencies = [
  "async-graphql",
  "async-graphql-axum",
  "axum",
+ "chronicle-primitives",
+ "postgres",
  "tokio",
  "tracing",
 ]
@@ -1352,6 +1355,7 @@ dependencies = [
  "async-trait",
  "chronicle-indexer",
  "chronicle-primitives",
+ "chronicle-server",
  "futures",
  "postgres",
  "tokio",

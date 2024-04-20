@@ -13,3 +13,7 @@ async-trait.workspace = true
 alloy.workspace = true
 postgres.workspace = true
 tokio.workspace = true
+
+
+
+async-graphql = "7.0.3"
