@@ -14,15 +14,12 @@ pub async fn query_events(
     event_sig: B256,
     block_number: BlockNumberOrTag,
 ) -> Result<Vec<ChronicleEvent>, anyhow::Error> {
-    println!("starting query_events");
     let filter = Filter::new()
         .address(addr)
         .event_signature(event_sig)
         .from_block(block_number);
     let log = provider.get_logs(&filter).await?;
-    println!("Log obtained");
     let chronicle_logs: Vec<ChronicleEvent> = log.into_iter().map(|log| log.into()).collect();
-    println!("Chronicle logs");
 
     Ok(chronicle_logs)
 }

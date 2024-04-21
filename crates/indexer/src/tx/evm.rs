@@ -18,7 +18,6 @@ where
     let mut stream = subscription.into_stream();
 
     while let Some(block) = stream.next().await {
-        println!("Captured Block: {:?}", block.transactions);
         match block.transactions {
             BlockTransactions::Full(txs) => {
                 let filtered_txs = txs

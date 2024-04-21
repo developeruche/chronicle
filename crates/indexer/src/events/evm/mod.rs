@@ -38,21 +38,16 @@ impl ChronicleEventIndexer for EvmEventIndexer {
         block_number: Self::BlockNumber,
         db_client: &mut tokio_postgres::Client,
     ) -> Result<(), anyhow::Error> {
-        println!("Querying events {}", &self.name);
         create_new_event_db_table(db_client, &self.name).await?;
         let events = query_events(provider.clone(), addr, event_sig, block_number).await?;
 
         for event in events {
-            println!("Stating Storing event in db");
             store_event_to_db(&event, db_client, &self.name).await?;
-            println!("Stored event in db");
         }
 
-        println!("Subscribing to events");
         self.subscribe_to_events(provider, vec![addr], event_sig, db_client)
             .await?;
 
-        println!("Subscribed to events, ended");
 
         Ok(())
     }

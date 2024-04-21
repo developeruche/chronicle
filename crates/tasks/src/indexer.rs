@@ -44,7 +44,7 @@ impl Task for IndexerTask {
                             }
                         }
                         _ = shutdown_token.cancelled() => {
-                            info!("Shutting down chain watcher");
+                            info!("Shutting down chronicle indexer");
                         }
                     }
                 });
@@ -52,7 +52,6 @@ impl Task for IndexerTask {
                 match try_join!(evm_indexer_handle) {
                     Ok(_) => {
                         info!("Server task completed");
-                        println!("Server task completed");
 
                     }
                     Err(e) => bail!("Error running server: {:?}", e),

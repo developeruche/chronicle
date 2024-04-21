@@ -24,7 +24,7 @@ impl Task for ServerTask {
                     }
                 }
                 _ = shutdown_token.cancelled() => {
-                    info!("Shutting down chain watcher");
+                    info!("Shutting down chronicle server");
                 }
             }
         });

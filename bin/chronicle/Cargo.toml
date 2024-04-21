@@ -13,3 +13,4 @@ clap = {version = "4.5.1", features = ["derive"]}
 toml = "0.8.10"
 chronicle-primitives = { path = "../../crates/primitives" }
 chronicle-tasks = { path = "../../crates/tasks" }
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
