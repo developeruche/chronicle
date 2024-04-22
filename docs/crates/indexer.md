@@ -43,7 +43,7 @@ pub trait ChronicleEventIndexer {
 Any blockchain and it to be suported by the Chronicle must implement the `ChronicleEventIndexer` trait.
 
 
-As it is well know that Chronicle indexes Events, Chronicle as indexes transactions, this is done by the `ChronicleTransactionIndexer` trait.
+As it is well know that Chronicle indexs Events, Chronicle also indexs transactions, this is done by the `ChronicleTransactionIndexer` trait.
 
 ```rust
 /// This transaction indexer trait would be used across all supported chains
