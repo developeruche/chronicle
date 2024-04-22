@@ -52,11 +52,9 @@ impl Task for IndexerTask {
                 match try_join!(evm_indexer_handle) {
                     Ok(_) => {
                         info!("Server task completed");
-
                     }
                     Err(e) => bail!("Error running server: {:?}", e),
                 }
-
             }
             StateMachine::PARACHAIN => {}
         }

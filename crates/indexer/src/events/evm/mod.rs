@@ -9,7 +9,8 @@ use alloy::{
 };
 use async_trait::async_trait;
 use chronicle_primitives::{
-    db::{create_new_event_db_table, store_event_to_db}, indexer::ChronicleEvent, interfaces::ChronicleEventIndexer,
+    db::{create_new_event_db_table, store_event_to_db},
+    interfaces::ChronicleEventIndexer,
 };
 
 pub struct EvmEventIndexer {
@@ -39,15 +40,17 @@ impl ChronicleEventIndexer for EvmEventIndexer {
         db_client: &mut tokio_postgres::Client,
     ) -> Result<(), anyhow::Error> {
         create_new_event_db_table(db_client, &self.name).await?;
+        // Query existing events from the specified block number
         let events = query_events(provider.clone(), addr, event_sig, block_number).await?;
 
+        // Store all this event is the database
         for event in events {
             store_event_to_db(&event, db_client, &self.name).await?;
         }
 
+        // Now subsbribing the events
         self.subscribe_to_events(provider, vec![addr], event_sig, db_client)
             .await?;
-
 
         Ok(())
     }

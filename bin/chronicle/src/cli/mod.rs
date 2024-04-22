@@ -3,7 +3,7 @@ use chronicle_tasks::{indexer::IndexerTask, server::ServerTask, spawn_tasks};
 use clap::Parser;
 use toml::from_str;
 use tracing_subscriber::filter::LevelFilter;
- use tracing_subscriber::util::SubscriberInitExt;
+use tracing_subscriber::util::SubscriberInitExt;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -40,13 +40,14 @@ pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-
-
 // this function is for setting up the logging process
 pub fn setup() -> Result<(), anyhow::Error> {
-	let filter =
-		tracing_subscriber::EnvFilter::from_default_env().add_directive(LevelFilter::INFO.into());
-	tracing_subscriber::fmt().with_env_filter(filter).finish().try_init()?;
+    let filter =
+        tracing_subscriber::EnvFilter::from_default_env().add_directive(LevelFilter::INFO.into());
+    tracing_subscriber::fmt()
+        .with_env_filter(filter)
+        .finish()
+        .try_init()?;
 
-	Ok(())
+    Ok(())
 }

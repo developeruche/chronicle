@@ -5,7 +5,6 @@ use chronicle_primitives::{
     ServerConfig,
 };
 
-
 pub struct ChronicleQuery;
 
 #[Object]
