@@ -227,7 +227,6 @@ pub async fn create_db_instance(url: &String) -> Result<tokio_postgres::Client, 
 pub mod tests {
     use super::*;
     use alloy::primitives::{address, b256, Bytes};
-    use postgres::NoTls;
 
     const DB_URL: &str = "host=localhost user=postgres";
     const NAME: &str = "events";
