@@ -1,14 +1,14 @@
-name = "project name"
+name = "chronicle"
 
 [[indexer]]
-event_name = "event-name"
+event_name = "lab9"
 state_machine = "EVM"
-rpc_url = "wss://eth.merkle.io"
+rpc_url = "RPC url"
 address = "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984" # UNI token
 event_signature = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef" # Transfer(address,address,uint256)
-block_number = 19697566
-db_url = "postgresql://postgres:postgres@localhost:5432/user"
+block_number = 19711184
+db_url = "host=localhost user=postgres"
 
 [server]
-db_url = "postgresql://postgres:postgres@localhost:5432/user"
-server_url = "127.0.0.1:8001"
+db_url = "host=localhost user=postgres"
+server_url = "127.0.0.1:8010"
