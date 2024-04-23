@@ -17,7 +17,7 @@ pub async fn create_new_event_db_table(
                 block_number    VARCHAR NULL,
                 transaction_hash VARCHAR NULL,
                 topics          VARCHAR NULL,
-                data            BYTEA NULL
+                data            VARCHAR NULL
             )
         "
     );
@@ -55,7 +55,7 @@ pub async fn store_event_to_db(
                 &event.block_number.to_string(),
                 &event.transaction_hash.to_string(),
                 &stringified_topics,
-                &event.data.to_vec(),
+                &event.data.to_string(),
             ],
         )
         .await?;
@@ -84,7 +84,7 @@ pub async fn get_all_events(
         let transaction_hash: String = row.get(3);
         let topics: String = row.get(4);
         let topics: Vec<String> = topics.split(',').map(String::from).collect();
-        let data: Vec<u8> = row.get(5);
+        let data: String = row.get(5);
 
         events.push(DisplayChronicleEvent::new(
             address,
@@ -123,7 +123,7 @@ pub async fn get_all_events_with_filter(
         let transaction_hash: String = row.get(2);
         let topics: String = row.get(3);
         let topics: Vec<String> = topics.split(',').map(String::from).collect();
-        let data: Vec<u8> = row.get(4);
+        let data: String = row.get(4);
 
         println!(
             "address: {}, block_number: {}, transaction_hash: {}, topics: {:?}, data: {:?}",
@@ -158,7 +158,7 @@ pub async fn get_events_by_tx_hash(
         let transaction_hash: String = row.get(3);
         let topics: String = row.get(4);
         let topics: Vec<String> = topics.split(',').map(String::from).collect();
-        let data: Vec<u8> = row.get(5);
+        let data: String = row.get(5);
 
         events.push(DisplayChronicleEvent::new(
             address,
@@ -195,7 +195,7 @@ pub async fn get_events_by_block_number(
         let transaction_hash: String = row.get(3);
         let topics: String = row.get(4);
         let topics: Vec<String> = topics.split(',').map(String::from).collect();
-        let data: Vec<u8> = row.get(5);
+        let data: String = row.get(5);
 
         events.push(DisplayChronicleEvent::new(
             address,

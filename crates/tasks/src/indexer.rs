@@ -40,7 +40,7 @@ impl Task for IndexerTask {
                         ) => {
                             // Want this indexing to halt before
                             if event_n_sub.is_err() {
-                                info!("Event subscription error, exitting now.");
+                                info!("Event subscription error, exitting now. ERROR: {:?}", event_n_sub.err().unwrap());
                             }
                         }
                         _ = shutdown_token.cancelled() => {

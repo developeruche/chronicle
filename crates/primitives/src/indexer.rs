@@ -22,7 +22,7 @@ pub struct DisplayChronicleEvent {
     pub block_number: String,
     pub transaction_hash: String,
     pub topics: Vec<String>,
-    pub data: Vec<u8>,
+    pub data: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
@@ -82,7 +82,7 @@ impl DisplayChronicleEvent {
         block_number: String,
         transaction_hash: String,
         topics: Vec<String>,
-        data: Vec<u8>,
+        data: String,
     ) -> Self {
         Self {
             address,
