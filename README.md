@@ -11,6 +11,7 @@
 ## Overview
 **Chronicle** in simple terms is an indexing software, indexing transactions and modules (Smart contract, Parachain, and so on) Events. Chronicle stores these data in a Postgress DB and renders these data using an GraphQL interface. Chronicle is designed to achieve high-performance and high-reliability in cloud deployments via a modular architecture, Developers can hand-pick modules to build whatever, seeing the components of the Chronicle as pieces of **Legos**.
 
+![Chronicle architecture](./docs/assets/chronicle.png)
 
 
 ### Motivation
