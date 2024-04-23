@@ -7,7 +7,7 @@ use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
 use tracing::{error, info};
 
-/// Core task trait implemented by top level Rundler tasks.
+/// Core task trait implemented by top level Chronicle tasks.
 #[async_trait]
 pub trait Task: Sync + Send + 'static {
     /// Run the task.
