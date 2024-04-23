@@ -47,7 +47,31 @@ Clone the repository and checkout submodules:
 ```
 git clone https://github.com/developeruche/chronicle
 cd chronicle
-git submodule update --init --recursive
+```
+
+Add config file to the root of the project:
+```toml
+
+name = "chronicle_name"
+
+[[indexer]]
+event_name = "event_name"
+state_machine = "EVM"
+rpc_url = "wss://eth-mainnet.g.alchemy.com/v2/ALCHEYM_API_KEY"
+address = "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984" # UNI token
+event_signature = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef" # Transfer(address,address,uint256)
+block_number = 19711184
+db_url = "host=localhost user=postgres"
+
+[server]
+db_url = "host=localhost user=postgres"
+server_url = "127.0.0.1:8010"
+
+```
+
+```
+cargo build --release
+./target/debug/chronicle --config-path .config.toml
 ```
 
 Run unit tests:
