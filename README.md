@@ -28,7 +28,7 @@ Chronicle is under active development.
 Chronicle is built to be very modular, add new chains is very frictionaless. Here are the categories of chains Chronicle is currently implemented for.
 
 * EVM compatible chains
-* Para chains
+* Para chains (Polkadot)
 
 
 ## Developers
