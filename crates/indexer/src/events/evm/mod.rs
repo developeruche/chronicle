@@ -31,6 +31,7 @@ impl ChronicleEventIndexer for EvmEventIndexer {
     type EventSignature = B256;
     type BlockNumber = BlockNumberOrTag;
 
+    // TODO: This should be renamed to query then subscribe events
     async fn query_events(
         &self,
         provider: Self::SubProvider,
