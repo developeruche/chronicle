@@ -17,3 +17,7 @@
 .DS_Store
 .helix
 .config.toml
+# direnv asnd nixos
+.envrc
+.direnv/
+.cargo
