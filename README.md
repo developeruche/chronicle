@@ -49,6 +49,22 @@ git clone https://github.com/developeruche/chronicle
 cd chronicle
 ```
 
+####  Nix Environment
+
+If you already have the proper Nix configuration, you can build the project’s artifacts inside a nix develop shell as follow
+
+``` sh
+$ nix develop
+```
+
+For better integration of rust tooling with your default IDE, you may optionally use [direnv](https://github.com/nix-community/nix-direnv?tab=readme-ov-file#usage-example)
+
+``` sh
+$ echo "use nix" >> .envrc
+$ direnv allow
+```
+####  All Environment
+
 Add config file to the root of the project:
 ```toml
 
@@ -78,7 +94,6 @@ Run unit tests:
 ```
 cargo test
 ```
-
 
 ## License
 
