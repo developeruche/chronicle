@@ -25,7 +25,7 @@ Chronicle is under active development.
 
 
 ### Chain Support
-Chronicle is built to be very modular, add new chains is very frictionaless. Here are the categories of chains Chronicle is currently implemented for.
+Chronicle is built to be very modular, add new chains is very frictionless. Here are the categories of chains Chronicle is currently implemented for.
 
 * EVM compatible chains
 * Para chains (Polkadot)
